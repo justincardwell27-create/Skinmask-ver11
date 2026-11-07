@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skin Mask Mobile V11</title>
+<style>
+:root{color-scheme:dark;--bg:#0f1520;--panel:#1b2433;--line:#3d4e68;--txt:#eff3fb;--muted:#b8c2d6;--accent:#6d86ff;--btn:#313f58;--btn2:#435476}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:auto;padding:14px}
+h1{margin:.2rem 0;font-size:1.5rem} p{color:var(--muted);line-height:1.45}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 0}
+button,.pick{border:1px solid #61708f;background:var(--btn);color:#fff;border-radius:12px;padding:12px 14px;font-size:1rem;min-height:46px}
+button.primary{background:var(--accent);border-color:var(--accent);font-weight:700}
+button.active{background:var(--btn2);outline:2px solid #8ea0ff}
+button:disabled{opacity:.55}
+label.pick{display:block;text-align:center;font-weight:700}
+input[type=file]{display:none}
+input[type=range]{width:100%}
+.small{font-size:.92rem}
+.note{border-left:4px solid #f0c35b;padding-left:10px}
+canvas{width:100%;display:block;border-radius:12px;background:#0a0d13;max-height:70vh;touch-action:none}
+.inline{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.inline label{display:flex;align-items:center;gap:6px}
+#editor{display:none}
+#status{min-height:1.3rem}
+#noticeToast{position:fixed;z-index:60;max-width:min(82vw,330px);background:#26090e;color:#ff8a94;border:2px solid #df405b;box-shadow:0 8px 26px #000b;border-radius:8px;padding:16px 38px 16px 16px;font-weight:900;letter-spacing:.04em;pointer-events:auto;display:none}
+#noticeToast button{position:absolute;right:3px;top:3px;min-height:30px;padding:2px 9px;background:#4c171f;border:0}
+#noticeShade{display:none;position:fixed;inset:0;z-index:90;background:#000b;align-items:center;justify-content:center;padding:20px}
+#noticeDialog{background:#240d15;color:#f8dce1;border:2px solid #d14b59;border-radius:14px;padding:22px;max-width:410px;width:100%;box-shadow:0 10px 48px #000d}
+#noticeDialog h2{color:#ff7181;overflow-wrap:anywhere;font-size:1.45rem}
+#noticeDialog p{color:#f1cbd1}
+#noticeDialog button{width:100%;background:#783140}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* V10 visual system */
+:root{--bg:#090d14;--panel:#141d2b;--line:#2b3a51;--muted:#a1adc2;--accent:#8c9cff;--btn:#24334a;--btn2:#374b68}
+body{background:radial-gradient(ellipse 130% 380px at 50% -150px,#283451 0%,transparent 75%),#090d14}
+main{max-width:900px;padding:18px 14px 56px}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 5px 10px}
+.mast h1{font-size:clamp(1.85rem,5vw,2.45rem);letter-spacing:-.045em;font-weight:850;margin:5px 0}
+.mast h1 em{font-style:normal;color:#b4bfff}.mast p{font-size:.94rem;max-width:510px;margin:.4rem 0}
+.mast-icon{font-size:3.25rem;color:#7585cf;opacity:.7}
+.eyebrow,.section-kicker,.section-title{letter-spacing:.15em;font-size:.73rem;font-weight:800;color:#a6b5dc}
+.version{color:#fff;background:#38496b;border-radius:6px;padding:3px 7px;margin-left:6px;letter-spacing:0}
+.panel{border-color:#2b394d;background:linear-gradient(145deg,#172234,#121a27);border-radius:18px;padding:18px;box-shadow:0 6px 20px #0002}
+.panel h3{font-size:1.05rem;letter-spacing:-.01em;color:#f2f5ff;margin-bottom:16px}
+.upload-panel{border-style:dashed;border-color:#5b70a1}.pick{background:linear-gradient(120deg,#6b7fec,#8c78e9);padding:16px;margin-top:12px}
+button,.pick{font-weight:650;border-color:#435675;transition:transform .12s,background .12s}
+button:active{transform:scale(.985)}button.primary{background:linear-gradient(110deg,#6f7eea,#8a7de8);border-color:#99a1ff}
+button.active{outline-color:#a7b3ff}.panel .row{margin-top:10px}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.muted{opacity:.65;font-size:.64rem}
+input[type=range]{accent-color:#9c9fff;height:28px}input[type=checkbox],input[type=radio]{accent-color:#8b99ff}
+canvas{border:1px solid #3c4d65;box-shadow:0 10px 30px #0005}
+.horror-panel{border:1px solid #5a3344;background:linear-gradient(155deg,#251923,#171923 60%)}
+.horror-panel input[type=range]{accent-color:#ec688a}
+.message-editor{margin:16px 0;padding:14px;border:1px solid #694251;border-radius:12px;background:#1a171e}
+.message-editor h4{margin:0 0 8px}
+.message-editor textarea{width:100%;min-height:120px;resize:vertical;border-radius:10px;border:1px solid #7c5465;background:#100f17;color:#fff;font:inherit;padding:12px;line-height:1.45;margin:6px 0 10px}
+.message-editor label{font-weight:650;display:block}
+.message-editor label.inline{display:flex;align-items:center;gap:8px;margin:8px 0 12px}
+.message-editor .row button{min-width:0}.crimson{color:#ff8ba1}
+#horrorLayer{position:fixed;inset:0;z-index:66;pointer-events:none;overflow:hidden}
+.horror-floater{position:absolute;max-width:min(78vw,340px);min-width:135px;min-height:64px;padding:16px 35px 15px 15px;background:linear-gradient(145deg,#2b111a,#100c12);color:#ffe4e9;border:1.5px solid #fa6a83;border-radius:7px;box-shadow:8px 10px 0 #0006,0 0 26px #c7234d22;letter-spacing:.035em;font-size:clamp(1rem,4vw,1.3rem);font-weight:950;line-height:1.1;overflow-wrap:anywhere;pointer-events:auto;transform:rotate(var(--tilt,0deg));transition:left .32s ease, top .32s ease}
+.horror-floater::before{content:'●  ●  ●';display:block;font-size:7px;letter-spacing:5px;color:#ef496b;margin-bottom:8px}
+.horror-floater .tiny-x{position:absolute;right:2px;top:2px;min-height:36px;min-width:36px;padding:1px;color:#ffabbc;border:none;background:transparent;font-size:15px}
+.horror-floater.mode-glitch{border-style:dashed;text-shadow:2px 0 #2df4e3,-2px 0 #ee4771}
+#horrorShade{position:fixed;inset:0;background:#020308db;z-index:86;display:flex;align-items:center;justify-content:center;padding:22px}
+#horrorShade[hidden],#takeover[hidden]{display:none!important}
+#horrorDialog{background:linear-gradient(150deg,#2d121d,#130e17);border:2px solid #ef6c86;color:#fff;padding:25px;max-width:430px;width:100%;border-radius:11px;box-shadow:0 0 0 7px #e8426922,0 14px 55px #000;transform:rotate(-1.5deg);text-align:center}
+.dialog-dots{display:flex;gap:6px}.dialog-dots i{width:8px;height:8px;border-radius:50%;background:#f17191;display:block}
+.dialog-label{font-weight:800;color:#bc7890;letter-spacing:.2em;font-size:.66rem;margin:18px 0 8px}
+#horrorTitle{font-weight:1000;line-height:1.08;letter-spacing:-.04em;color:#ff849c;font-size:clamp(2rem,8vw,3.5rem);overflow-wrap:anywhere;text-shadow:2px 0 #1ef4e8}
+.horror-close{background:#91394f;max-width:230px;width:100%;margin-top:14px}
+#takeover{position:fixed;inset:0;z-index:110;background:radial-gradient(circle at 50% 30%,#3d0b23 0,#130911 48%,#030509 100%);display:grid;place-items:center;text-align:center;color:#f0f1f6;padding:22px}
+.takeover-noise{position:absolute;inset:0;opacity:.16;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,#e41b5b44 4px 5px);mix-blend-mode:screen}
+.takeover-body{position:relative;width:100%}.takeover-eyebrow{letter-spacing:.3em;color:#fa889e;font-weight:800;font-size:.72rem}
+.takeover-word{font-weight:1000;letter-spacing:-.06em;line-height:1.01;font-size:clamp(2.3rem,11vw,6rem);overflow-wrap:anywhere;text-shadow:3px 1px #00e3f1,-3px -1px #fa296c;margin:22px 0}
+.takeover-clock{font-variant-numeric:tabular-nums;font-size:clamp(4rem,25vw,9rem);font-weight:1000;letter-spacing:-.08em;color:#fff}
+.takeover-sub{font-weight:750;letter-spacing:.13em;color:#f28ca5;font-size:.82rem;margin-top:6px}
+@media(max-width:450px){.panel{padding:14px}.mast-icon{display:none}.row button{font-size:.91rem;padding:9px 7px}.inline{gap:10px}}
+@media(prefers-reduced-motion:reduce){.horror-floater{transition:none}}
+
+.tester{margin-top:13px;padding:12px;border:1px solid #786174;border-radius:12px;background:#171622}.tester summary{cursor:pointer;font-weight:750;color:#ffc2d4;padding:5px}
+.tester select,.tester input[type=text]{display:block;width:100%;min-height:42px;margin:8px 0 12px;background:#0d111d;color:#fff;border:1px solid #6e6580;border-radius:8px;padding:9px;font:inherit}
+.voice-settings{border-top:1px solid #544657;margin-top:15px;padding-top:10px}.voice-settings label{display:block;margin:9px 0}
+#horrorPanic{position:fixed;z-index:200;right:8px;bottom:9px;background:#2b1c2c;color:#f8d7e1;font-size:10px;min-height:34px;padding:5px 8px;border-radius:8px;opacity:.75;max-width:105px}
+#horrorPanic[hidden],#horrorEffects[hidden]{display:none!important}
+#horrorEffects{position:fixed;inset:0;z-index:79;pointer-events:none;overflow:hidden}
+.v11-pop{position:absolute;z-index:71;min-width:125px;max-width:min(78vw,330px);padding:17px 44px 17px 15px;font-weight:900;font-size:clamp(18px,5vw,31px);line-height:1.08;text-transform:uppercase;overflow-wrap:anywhere;border:3px solid;box-shadow:9px 11px 1px #0009;pointer-events:auto;transition:top .23s,left .23s;touch-action:none}
+.v11-pop .v11-x{position:absolute;top:2px;right:2px;width:36px;height:36px;min-height:36px;padding:0;font-size:23px;background:transparent;border:0;color:inherit}
+.v11-danger{background:#420c20;color:#ffcedc;border-color:#f94365;border-radius:3px;transform:rotate(-2deg)}
+.v11-paper{background:#f2eee6;color:#0a0909;border-color:#0a0909;border-radius:0;font-family:Georgia,serif;transform:rotate(4deg)}
+.v11-terminal{background:#071d17;color:#50ffc5;border-color:#10c58e;border-radius:1px;font-family:monospace;text-shadow:2px 1px #194f46}
+.v11-yellow{background:#fee43d;color:#0d0b06;border-color:#0d0b06;border-radius:0;transform:rotate(3deg)}
+.v11-violet{background:#260d40;color:#ffaff5;border-color:#c95cff;border-radius:18px;font-style:italic}
+.v11-outline{background:#0b0b0be8;color:#fff;border:5px double #fff;border-radius:2px;letter-spacing:-.05em}
+.v11-xbar{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.v11-xbar button{min-height:35px;padding:1px 8px;min-width:37px;background:#14121e;color:white;border:1px solid #c7c7cf}
+.v11-tap{display:block;min-width:135px;margin-top:14px;font-size:24px;background:#f43f5e;color:#fff}
+.v11-spin{animation:v11-spin 2.8s linear infinite}.v11-grow{animation:v11-grow 1.65s ease-in forwards}.v11-shake{filter:hue-rotate(120deg)}
+@keyframes v11-spin{to{transform:rotate(360deg)}}@keyframes v11-grow{to{transform:scale(2.3)}}
+.hvr-upside{transform:rotate(180deg);transform-origin:center center;pointer-events:none}
+.hvr-melt{filter:blur(1.2px) contrast(1.5) saturate(2);transform:skew(0,5deg) scaleY(1.04);pointer-events:none;animation:v11-melt 3s ease-in-out infinite alternate}
+@keyframes v11-melt{to{transform:skew(4deg,9deg) scaleY(1.18);filter:blur(3px) contrast(2)}}
+.hvr-zoom{transform:scale(2.2);transform-origin:40% 20%;pointer-events:none}
+.v11-false{background:#010105ab;display:grid;place-items:center}.v11-false-stamp{transform:rotate(-18deg);padding:20px;border:8px double #ef123c;color:#f94e75;font-size:clamp(3rem,12vw,8rem);font-weight:1000;overflow-wrap:anywhere;text-align:center}
+.v11-contamination{background:repeating-linear-gradient(0deg,transparent 0 13px,#e32f6c42 14px 17px,transparent 18px 21px);mix-blend-mode:normal;animation:v11-noise .18s steps(2) infinite}
+.v11-contamination-word{position:absolute;top:34%;left:5%;right:5%;text-align:center;font-size:clamp(2rem,11vw,6rem);font-weight:1000;text-shadow:4px 0 #00fcff,-4px 0 #ff005c;color:#fff}
+@keyframes v11-noise{50%{transform:translateY(6px);filter:hue-rotate(35deg)}}
+.v11-jigsaw{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:3px}.v11-piece{border:2px solid #f05075;background:linear-gradient(125deg,#2d1325cc,#05060ad9);transform:translate(var(--dx),var(--dy)) rotate(2deg);color:#fff;font-size:clamp(12px,4vw,24px);font-weight:900;display:grid;place-items:center;text-align:center}
+.v11-tiles{pointer-events:auto;display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:3px;background:#08090e;padding:3px;overflow-y:auto;align-content:start}.v11-tile{height:46vh;overflow:hidden;background:#1a2230;border:1px solid #7889a2;box-shadow:inset 0 0 0 2px #060915}.v11-tiles[style*='3'] .v11-tile{height:32vh}
+.v11-mini{width:100%;height:100%;display:flex;flex-direction:column;gap:5px;padding:6px;font-size:clamp(7px,2vw,13px);font-weight:800;color:#ffcedd}.v11-mini>div{background:#293247;padding:4px;border:1px solid #3e536c;border-radius:3px}.v11-mini img{flex:1;min-height:0;max-height:75%;width:100%;object-fit:contain;background:#04070d}
+@media(prefers-reduced-motion:reduce){.v11-spin,.v11-grow,.v11-contamination,.hvr-melt{animation:none!important}}
+
+</style>
+</head>
+<body>
+<main>
+  <header class="mast"><div><div class="eyebrow">IMAGE CENSOR STUDIO <span class="version">V11</span></div><h1>Skin Mask <em>Mobile</em></h1><p>Automatic character censorship, precise corrections, and optional glitch-horror mode.</p></div><span class="mast-icon" aria-hidden="true">◈</span></header>
+
+  <div class="panel upload-panel">
+    <div class="section-kicker">START HERE</div>
+    <label class="pick" for="file">＋ Choose an image</label>
+    <input id="file" type="file" accept="image/png,image/jpeg,image/webp">
+    <p class="small">Runs in your browser. Uses offline illustration-aware detection and optional built-in browser face detection. This is not a trained character-segmentation AI model.</p>
+  </div>
+
+  <div id="editor">
+    <div class="panel canvas-panel">
+      <div class="section-title"><span>01 / Preview</span><span class="muted">AUTO-DETECT READY</span></div>
+      <canvas id="view"></canvas>
+      <p id="status"></p>
+      <div class="row">
+        <button id="auto" class="primary">Detect and censor automatically</button>
+        <button id="original">Show original</button>
+      </div>
+      <div class="row">
+        <button id="undo">↶ Undo</button>
+        <button id="redo">↷ Redo</button>
+        <button id="clear">Clear image…</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top:0">02 / Detection</h3>
+      <div class="inline" id="modeGroup">
+        <label><input type="radio" name="coverage" id="modeSkin" checked> Skin &amp; face</label>
+        <label><input type="radio" name="coverage" id="modeFull"> Full character (clothes, hair, accessories)</label>
+      </div>
+      <p class="small note">Full-character mode estimates the foreground from image boundaries and skin anchors; it is an experimental background-removal heuristic, not a trained AI model. Complex scenery may be included, and low-contrast characters may be missed. Review before exporting.</p>
+      <div class="inline">
+        <label><input type="checkbox" id="face" checked> Face</label>
+        <label><input type="checkbox" id="skin" checked> Body skin</label>
+        <label><input type="checkbox" id="art" checked> Illustration mode</label>
+      </div>
+      
+      <label>Coverage expansion: <span id="expandv">18</span> px</label>
+      <input id="expand" type="range" min="0" max="60" value="18">
+      <label>Detection aggressiveness: <span id="aggrv">35</span></label>
+      <input id="aggr" type="range" min="0" max="100" value="35">
+      <p class="small note">Foreground-aware filtering attempts to exclude plain backgrounds and implausibly large warm-colored objects. Hats, tails, clothing, and unusual palettes may still cause errors; this is not trained AI character recognition.</p>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top:0">03 / Touch-up tools</h3>
+      <div class="row" id="tools">
+        <button data-tool="none" class="active">No editing</button>
+        <button data-tool="add">Censor brush</button>
+        <button data-tool="erase">Restore brush</button>
+      </div>
+      <label>Brush radius: <span id="brushv">26</span> px</label>
+      <input id="brush" type="range" min="4" max="100" value="26">
+      <p class="small">Manual tools are just for fixing misses. Automatic censoring remains the default.</p>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top:0">04 / Censor effects</h3>
+      <div class="row" id="effects">
+        <button data-effect="mosaic" class="active">Mosaic</button>
+        <button data-effect="blur">Blur</button>
+        <button data-effect="static">TV Static</button>
+        <button data-effect="corruption">Corruption</button>
+      </div>
+      <p class="small">Corruption creates sharp black-and-white posterization with neon cyan, magenta and red artifacts, inspired by the V7 0 px glitch you showed.</p>
+      <label>Mask feathering: <span id="featherv">6</span> px</label>
+      <input id="feather" type="range" min="0" max="20" value="6">
+      <label>Strength: <span id="strengthv">72</span></label>
+      <input id="strength" type="range" min="5" max="100" value="72">
+      <div class="row">
+        <button id="maskbtn">Show mask: Off</button>
+        <button id="save" class="primary">Save censored PNG</button>
+      </div>
+    </div>
+    <div class="panel horror-panel">
+      <div class="section-kicker crimson">OPTIONAL EXPERIENCE</div>
+      <h3 style="margin-top:5px">05 / Glitch Horror</h3>
+      <p class="small">Unpredictable, theatrical interruptions. Built-in taunts are theatrical and may contain profanity. Custom messages are controlled by you. Motion stays low-flash.</p>
+      <div class="inline"><label><input type="checkbox" id="notices"> Enable Glitch Horror Mode</label></div>
+      <div class="inline"><label><input type="checkbox" id="haunt"> Also stamp the exported image</label></div>
+      <label>Harshness: <span id="harshv">75%</span></label>
+      <input type="range" id="harsh" min="1" max="100" step="1" value="75">
+      <label>Frequency: <span id="freqv">50%</span></label>
+      <input type="range" id="freq" min="1" max="100" step="1" value="50">
+      <div class="message-editor">
+        <h4>Custom popup messages</h4>
+        <p class="small">Write one phrase per line. Messages are stored in this browser on this device, not uploaded or sent anywhere.</p>
+        <label class="inline"><input id="includeBuiltins" type="checkbox" checked> Include built-in messages</label>
+        <label for="customMessages">Your messages</label>
+        <textarea id="customMessages" rows="6" maxlength="24000" placeholder="Add a phrase per line..."></textarea>
+        <div class="row"><button type="button" id="saveMessages">Save messages</button><button type="button" id="clearMessages">Clear custom messages</button></div>
+        <p class="small" id="customMessageCount">0 custom messages saved</p><p class="small" id="messageSaveStatus" role="status"></p>
+      </div>
+      <div class="row"><button id="testNotice">Random test</button><button id="disableHorror">Stop Horror Mode</button></div>
+      <details class="tester" id="tester"><summary>◈ Horror Effect Tester</summary>
+        <p class="small">Preview one mechanic at a time, independently of the random live mode. Stop restores the normal editor.</p>
+        <label for="testEffect">Preview mechanic</label>
+        <select id="testEffect"></select>
+        <div class="row"><button id="runTest">Run selected effect</button><button id="stopTest">Stop test</button></div>
+        <div class="voice-settings"><label class="inline"><input type="checkbox" id="voiceEnabled"> Enable spoken messages (off by default)</label>
+        <label>Voice <select id="voiceSelect"><option value="">Device default</option></select></label>
+        <label>Pitch <span id="pitchValue">1.15</span><input type="range" id="voicePitch" min="0.6" max="1.7" value="1.15" step="0.05"></label>
+        <label>Speech speed <span id="rateValue">0.9</span><input type="range" id="voiceRate" min="0.6" max="1.4" value="0.9" step="0.05"></label>
+        <label>Volume <span id="volValue">65%</span><input type="range" id="voiceVol" min="0" max="100" value="65"></label>
+        <label for="voiceTry">Test speech</label><input id="voiceTry" type="text" maxlength="160" placeholder="A phrase to speak" value="NICE TRY, LOSER.">
+        <button id="speakTest" type="button">Speak test phrase</button>
+        <p class="small">Speech uses available Android voices. A feminine voice is preferred when one is recognizable, but isn't guaranteed.</p></div>
+      </details>
+      <p class="small">The screen effects are simulated. Android navigation and browser exit always work. Turning off this mode clears its popups.</p>
+    </div>
+  </div>
+</main>
+<div id="horrorLayer" aria-live="off"></div>
+<div id="horrorShade" role="presentation" hidden>
+  <section id="horrorDialog" role="dialog" aria-modal="true" aria-labelledby="horrorTitle">
+    <div class="dialog-dots"><i></i><i></i><i></i></div>
+    
+    <h2 id="horrorTitle">REJECTED</h2>
+    <button id="horrorClose" class="horror-close">CLOSE</button>
+  </section>
+</div>
+<div id="takeover" role="dialog" aria-modal="true" aria-labelledby="takeoverWord" hidden>
+  <div class="takeover-noise" aria-hidden="true"></div>
+  <div class="takeover-body"><div id="takeoverWord" class="takeover-word">NICE TRY.</div><div id="takeoverClock" class="takeover-clock">5</div><div id="takeoverSub" class="takeover-sub"></div></div>
+</div>
+<div id="horrorEffects" hidden aria-hidden="true"></div>
+<button id="horrorPanic" type="button" hidden>Stop Horror Mode</button>
+<script>
+const $=id=>document.getElementById(id);
+const view=$('view'), ctx=view.getContext('2d',{willReadFrequently:true});
+let source=null, mask=null, faceMask=null, bodyMask=null;
+let history=[], future=[];
+let showOriginal=false, showMask=false;
+let tool='none', effect='mosaic';
+let overlayIndex=0;
+let fullMask=null, noticeTimer=null, noticeCount=0, noticeWasEnabled=false;
+let drawing=false, lastPoint=null;
+let faceDetector=null;
+
+function status(t){$('status').textContent=t}
+function buttons(){ $('undo').disabled=!history.length; $('redo').disabled=!future.length; }
+function cloneMask(m){ return m ? new Uint8Array(m) : null; }
+function pushState(){ if(!mask) return; history.push(cloneMask(mask)); if(history.length>20) history.shift(); future=[]; buttons(); }
+function setMask(m){ mask=cloneMask(m); render(); buttons(); }
+
+function resetEditor(){
+  source=null; mask=null; faceMask=null; bodyMask=null; history=[]; future=[];
+  showOriginal=false; showMask=false; tool='none'; effect='mosaic';
+  $('haunt').checked=false; overlayIndex=0;
+  $('modeSkin').checked=true; $('modeFull').checked=false; fullMask=null;
+  $('notices').checked=false; stopNotices(); $('harsh').value=75; $('freq').value=50; $('harshv').textContent='75%'; $('freqv').textContent='50%';
+  $('editor').style.display='none'; $('file').value='';
+  ctx.clearRect(0,0,view.width,view.height);
+  $('face').checked=true; $('skin').checked=true; $('art').checked=true; 
+  $('expand').value=18; $('expandv').textContent='18';
+  $('aggr').value=35; $('aggrv').textContent='35';
+  $('brush').value=26; $('brushv').textContent='26';
+  $('strength').value=72; $('strengthv').textContent='72'; $('feather').value=6; $('featherv').textContent='6';
+  $('original').textContent='Show original';
+  $('maskbtn').textContent='Show mask: Off';
+  for(const b of $('tools').querySelectorAll('button')) b.classList.toggle('active', b.dataset.tool==='none');
+  for(const b of $('effects').querySelectorAll('button')) b.classList.toggle('active', b.dataset.effect==='mosaic');
+  buttons(); status('');
+}
+
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function pointFromEvent(e){
+  const r=view.getBoundingClientRect();
+  return {
+    x: clamp(Math.round((e.clientX-r.left)*view.width/r.width),0,view.width-1),
+    y: clamp(Math.round((e.clientY-r.top)*view.height/r.height),0,view.height-1)
+  };
+}
+
+function dilate(bin,w,h,rad){
+  if(rad<=0) return bin;
+  let cur=bin.slice();
+  for(let t=0;t<rad;t++){
+    const next=cur.slice();
+    for(let y=0;y<h;y++){
+      for(let x=0;x<w;x++){
+        const i=y*w+x;
+        if(cur[i]) continue;
+        if((x>0&&cur[i-1])||(x<w-1&&cur[i+1])||(y>0&&cur[i-w])||(y<h-1&&cur[i+w])) next[i]=255;
+      }
+    }
+    cur=next;
+  }
+  return cur;
+}
+
+function detectWarmMask(img,w,h){
+  const out=new Uint8Array(w*h);
+  const artMode=$('art').checked;
+  const aggr=+$('aggr').value;
+  for(let i=0;i<w*h;i++){
+    const r=img[i*4], g=img[i*4+1], b=img[i*4+2];
+    const max=Math.max(r,g,b), min=Math.min(r,g,b), diff=max-min;
+    const cb=128 - 0.168736*r - 0.331264*g + 0.5*b;
+    const cr=128 + 0.5*r - 0.418688*g - 0.081312*b;
+
+    let photo = r>55 && g>28 && b>18 && diff>14 && r>g*1.02 && r>b*1.05 && cb>77 && cb<135 && cr>133 && cr<178;
+    let art   = artMode && r>50 && g>28 && b>18 && diff>8 && cb>70 && cb<150 && cr>125 && cr<190 && r>=g*0.86 && r>=b*0.95;
+    if(aggr<40){ art = art && diff>10; }
+    if(aggr>65){ photo = photo || (r>48&&g>22&&b>15&&cb>72&&cb<145&&cr>128&&cr<187); }
+    out[i] = (photo||art) ? 255 : 0;
+  }
+  return out;
+}
+
+function connectedComponents(bin,w,h){
+  const seen=new Uint8Array(w*h), comps=[], stack=[];
+  for(let i=0;i<w*h;i++){
+    if(!bin[i]||seen[i]) continue;
+    seen[i]=1; stack.push(i);
+    let area=0, minx=w, miny=h, maxx=0, maxy=0, sumx=0, sumy=0, touchesEdge=false;
+    while(stack.length){
+      const v=stack.pop(); area++;
+      const x=v%w, y=(v/w)|0; sumx+=x; sumy+=y;
+      if(x<minx)minx=x; if(y<miny)miny=y; if(x>maxx)maxx=x; if(y>maxy)maxy=y;
+      if(x===0||y===0||x===w-1||y===h-1) touchesEdge=true;
+      const nbs=[x>0?v-1:-1, x<w-1?v+1:-1, y>0?v-w:-1, y<h-1?v+w:-1];
+      for(const n of nbs){ if(n>=0 && bin[n] && !seen[n]){ seen[n]=1; stack.push(n); } }
+    }
+    comps.push({
+      area, minx, miny, maxx, maxy,
+      cx: sumx/area, cy: sumy/area,
+      touchesEdge
+    });
+  }
+  return comps;
+}
+
+async function getFaceBoxes(){
+  try{
+    if('FaceDetector' in window){
+      if(!faceDetector) faceDetector=new FaceDetector({fastMode:true,maxDetectedFaces:3});
+      const faces=await faceDetector.detect(view);
+      return faces.map(f=>f.boundingBox);
+    }
+  }catch(e){}
+  return [];
+}
+
+function boxEllipseMask(w,h,box,expand){
+  const m=new Uint8Array(w*h);
+  const cx=box.x + box.width/2, cy=box.y + box.height/2;
+  const rx=Math.max(8, box.width/2 + expand);
+  const ry=Math.max(8, box.height/2 + expand*1.15);
+  const xmin=Math.max(0, Math.floor(cx-rx)), xmax=Math.min(w-1, Math.ceil(cx+rx));
+  const ymin=Math.max(0, Math.floor(cy-ry)), ymax=Math.min(h-1, Math.ceil(cy+ry));
+  for(let y=ymin;y<=ymax;y++){
+    for(let x=xmin;x<=xmax;x++){
+      const dx=(x-cx)/rx, dy=(y-cy)/ry;
+      if(dx*dx + dy*dy <= 1) m[y*w+x]=255;
+    }
+  }
+  return m;
+}
+
+function composeMask(){
+  if(!source) return;
+  const w=view.width, h=view.height;
+  const m=new Uint8Array(w*h);
+  const useFace=$('face').checked, useSkin=$('skin').checked;
+  if($('modeFull').checked && fullMask){ mask=fullMask.slice(); render(); return; }
+  for(let i=0;i<w*h;i++){
+    if((useFace && faceMask && faceMask[i]) || (useSkin && bodyMask && bodyMask[i])) m[i]=255;
+  }
+  mask=m;
+  render();
+}
+
+
+// A lightweight background exclusion pass. Grow low-color-distance areas from
+// the edges; it helps remove uniform scenery but is not semantic segmentation.
+function likelyBackground(img,w,h){
+  const bg=new Uint8Array(w*h), seen=new Uint8Array(w*h);
+  const corners=[0,w-1,(h-1)*w,w*h-1];
+  const samples=corners.map(i=>[img.data[i*4],img.data[i*4+1],img.data[i*4+2]]);
+  // Only grow from corner regions if corners agree reasonably on their colors.
+  let similarPairs=0;
+  for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){
+    if(Math.hypot(...samples[i].map((v,c)=>v-samples[j][c]))<66) similarPairs++;
+  }
+  if(similarPairs<2) return bg;
+  const queue=new Int32Array(w*h),tol=42;
+  // Bound work using head/tail pointers (each pixel enters at most once).
+  let head=0,tail=0;
+  function enqueue(i){if(seen[i])return;seen[i]=1;queue[tail++]=i;}
+  for(const i of corners)enqueue(i);
+  while(head<tail){
+    const v=queue[head++],k=v*4;
+    let best=1e9;
+    for(const c of samples){
+      const d=Math.hypot(img.data[k]-c[0],img.data[k+1]-c[1],img.data[k+2]-c[2]);
+      if(d<best)best=d;
+    }
+    if(best>tol)continue;
+    bg[v]=255;
+    const x=v%w,y=(v/w)|0;
+    for(const n of [x>0?v-1:-1,x<w-1?v+1:-1,y>0?v-w:-1,y<h-1?v+w:-1]){
+      if(n>=0&&!seen[n])enqueue(n);
+    }
+  }
+  return bg;
+}
+
+function addEyeBand(m,w,h,box){
+  const x1=clamp(Math.floor(box.x+box.width*.12),0,w-1);
+  const x2=clamp(Math.ceil(box.x+box.width*.88),0,w-1);
+  const y1=clamp(Math.floor(box.y+box.height*.19),0,h-1);
+  const y2=clamp(Math.ceil(box.y+box.height*.57),0,h-1);
+  for(let y=y1;y<=y2;y++)for(let x=x1;x<=x2;x++)m[y*w+x]=255;
+}
+
+// Box smoothing of the mask, used only for opacity at censor borders.
+// This avoids a hard binary seam while leaving the saved source unchanged.
+function featherAlpha(binary,w,h,radius){
+  if(!radius)return binary;
+  const tmp=new Float32Array(w*h),out=new Float32Array(w*h);
+  const r=radius;
+  for(let y=0;y<h;y++){
+    let sum=0;
+    for(let x=0;x<Math.min(w,r+1);x++)sum+=binary[y*w+x]/255;
+    for(let x=0;x<w;x++){
+      if(x>0){const add=x+r,remove=x-r-1;if(add<w)sum+=binary[y*w+add]/255;if(remove>=0)sum-=binary[y*w+remove]/255;}
+      const cnt=Math.min(w-1,x+r)-Math.max(0,x-r)+1;
+      tmp[y*w+x]=sum/cnt;
+    }
+  }
+  for(let x=0;x<w;x++){
+    let sum=0;
+    for(let y=0;y<Math.min(h,r+1);y++)sum+=tmp[y*w+x];
+    for(let y=0;y<h;y++){
+      if(y>0){const add=y+r,remove=y-r-1;if(add<h)sum+=tmp[add*w+x];if(remove>=0)sum-=tmp[remove*w+x];}
+      const cnt=Math.min(h-1,y+r)-Math.max(0,y-r)+1;
+      out[y*w+x]=clamp(sum/cnt,0,1);
+    }
+  }
+  return out;
+}
+
+
+// Estimate the entire foreground using color-adaptive flood fill from every
+// boundary pixel at a reduced resolution; no network calls or image uploads.
+// Contrast with a real person/character segmentation network: this is heuristic.
+function estimateFullCharacter(img,w,h,anchor){
+  const scale=Math.min(1,340/Math.max(w,h));
+  const sw=Math.max(16,Math.round(w*scale)), sh=Math.max(16,Math.round(h*scale));
+  const cv=document.createElement('canvas');cv.width=sw;cv.height=sh;
+  const cc=cv.getContext('2d',{willReadFrequently:true}),orig=document.createElement('canvas');
+  orig.width=w;orig.height=h;orig.getContext('2d').putImageData(img,0,0);
+  cc.drawImage(orig,0,0,sw,sh);
+  const px=cc.getImageData(0,0,sw,sh).data,n=sw*sh;
+  const bg=new Uint8Array(n),seen=new Uint8Array(n),queue=new Int32Array(n);let head=0,tail=0;
+  const corners=[0,sw-1,(sh-1)*sw,n-1];
+  const col=i=>[px[i*4],px[i*4+1],px[i*4+2]];
+  const refs=corners.map(col);
+  const dist=(i,c)=>Math.sqrt((px[i*4]-c[0])**2+(px[i*4+1]-c[1])**2+(px[i*4+2]-c[2])**2);
+  const similar=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+  const cohesive=refs.some((a,i)=>refs.some((b,j)=>j>i&&similar(a,b)<90));
+  // For busy backgrounds, avoid selecting almost all pixels as foreground.
+  if(!cohesive)return new Uint8Array(w*h);
+  function enqueue(i){if(!seen[i]){seen[i]=1;queue[tail++]=i;}}
+  for(let x=0;x<sw;x++){enqueue(x);enqueue((sh-1)*sw+x)}
+  for(let y=0;y<sh;y++){enqueue(y*sw);enqueue(y*sw+sw-1)}
+  while(head<tail){let v=queue[head++],x=v%sw,y=(v/sw)|0;let d=Infinity;
+    for(const c of refs)d=Math.min(d,dist(v,c));
+    if(d>48)continue; bg[v]=255;
+    const ns=[x>0?v-1:-1,x<sw-1?v+1:-1,y>0?v-sw:-1,y<sh-1?v+sw:-1];
+    for(const k of ns)if(k>=0)enqueue(k);
+  }
+  const fg=new Uint8Array(n);for(let i=0;i<n;i++)fg[i]=bg[i]?0:255;
+  const ccItems=connectedComponents(fg,sw,sh);
+  // Keep central or skin-anchored nonbackground connected regions. Reject tiny
+  // fragments and implausibly broad selection (>85% of the total picture).
+  let best=null,bestScore=-1;
+  for(const c of ccItems){const frac=c.area/n;if(frac<.015||frac>.86)continue;
+    const center=Math.hypot((c.cx-sw*.5)/sw,(c.cy-sh*.5)/sh);
+    let score=c.area*(1.15-Math.min(1,center));
+    if(c.touchesEdge)score*=.7;
+    if(score>bestScore){best=c;bestScore=score;}
+  }
+  if(!best)return new Uint8Array(w*h);
+  // Preserve all connected pixels belonging to the chosen component.
+  let seed=-1;
+  const cx=Math.round(best.cx),cy=Math.round(best.cy);
+  for(let r=0;r<Math.max(sw,sh)&&seed<0;r++){
+    for(let yy=Math.max(0,cy-r);yy<=Math.min(sh-1,cy+r);yy++){
+      for(let xx=Math.max(0,cx-r);xx<=Math.min(sw-1,cx+r);xx++)if(fg[yy*sw+xx]){seed=yy*sw+xx;break;}
+      if(seed>=0)break;
+    }
+  }
+  if(seed<0)return new Uint8Array(w*h);
+  const kept=new Uint8Array(n),q=new Int32Array(n);let a=0,b=0;q[b++]=seed;kept[seed]=255;
+  while(a<b){let v=q[a++],x=v%sw,y=(v/sw)|0;for(const k of [x>0?v-1:-1,x<sw-1?v+1:-1,y>0?v-sw:-1,y<sh-1?v+sw:-1])if(k>=0&&fg[k]&&!kept[k]){kept[k]=255;q[b++]=k;}}
+  const output=new Uint8Array(w*h);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)output[y*w+x]=kept[Math.min(sh-1,Math.floor(y*sh/h))*sw+Math.min(sw-1,Math.floor(x*sw/w))];
+  return output;
+}
+async function autoDetect(){
+  if(!source) return;
+  status('Detecting regions…');
+  $('auto').disabled=true;
+  try{
+    const w=view.width, h=view.height, img=source.data;
+    const warm=detectWarmMask(img,w,h);
+    const background=likelyBackground(source,w,h);
+    // Remove likely uniform backgrounds before region selection.
+    for(let i=0;i<warm.length;i++)if(background[i])warm[i]=0;
+    const comps=connectedComponents(warm,w,h);
+    const faces=await getFaceBoxes();
+    const expand = Math.round(+$('expand').value/6);
+    const kept = new Uint8Array(w*h);
+
+    // Score components so the detector is conservative instead of censoring huge warm-toned backgrounds.
+    const centerX=w/2, centerY=h/2;
+    const faceCenters=faces.map(f=>({x:f.x+f.width/2,y:f.y+f.height/2}));
+    const sorted = comps.map((c,idx)=>{
+      const areaFrac=c.area/(w*h);
+      let score = c.area;
+      const distCenter=Math.hypot((c.cx-centerX)/w,(c.cy-centerY)/h);
+      score *= (1.25 - Math.min(.9, distCenter));
+      if(c.touchesEdge) score *= .72;
+      if(areaFrac>.22) score *= .03; // strong rejection of giant false positives
+      if(c.touchesEdge && areaFrac>.075) score *= .13;
+      const bw=c.maxx-c.minx+1,bh=c.maxy-c.miny+1;
+      if(bw>w*.9 || bh>h*.9)score*=.08;
+      if(areaFrac<0.0008) score *= .2; // kill tiny speckles
+      if(faceCenters.length){
+        let best=999;
+        for(const fc of faceCenters) best=Math.min(best, Math.hypot(c.cx-fc.x,c.cy-fc.y));
+        score *= (best < Math.max(w,h)*0.28 ? 2.1 : (best < Math.max(w,h)*0.45 ? 1.25 : 0.8));
+      }
+      if(c.cy < h*0.08 || c.cy > h*0.97) score *= .7;
+      return {c, idx, score};
+    }).sort((a,b)=>b.score-a.score);
+
+    // Re-scan to rebuild component map and keep only top likely regions.
+    const compIds=new Int32Array(w*h).fill(-1), seen=new Uint8Array(w*h), stack=[];
+    let cid=0;
+    for(let i=0;i<w*h;i++){
+      if(!warm[i]||seen[i]) continue;
+      seen[i]=1; stack.push(i);
+      while(stack.length){
+        const v=stack.pop(); compIds[v]=cid;
+        const x=v%w,y=(v/w)|0;
+        const nbs=[x>0?v-1:-1,x<w-1?v+1:-1,y>0?v-w:-1,y<h-1?v+w:-1];
+        for(const n of nbs){ if(n>=0&&warm[n]&&!seen[n]){ seen[n]=1; stack.push(n); } }
+      }
+      cid++;
+    }
+
+    const keepCount = Math.min(5, Math.max(2, sorted.length));
+    const keepSet = new Set(sorted.slice(0,keepCount).filter(s=>s.score > Math.max(20,w*h*.0008)).map(s=>s.idx));
+    for(let i=0;i<compIds.length;i++) if(keepSet.has(compIds[i])) kept[i]=255;
+
+    faceMask = new Uint8Array(w*h);
+    if(faces.length){
+      for(const fb of faces){
+        const em = boxEllipseMask(w,h,fb,Math.round(+$('expand').value*.6));
+        for(let i=0;i<em.length;i++) if(em[i]) faceMask[i]=255;
+        addEyeBand(faceMask,w,h,fb);
+      }
+    }else{
+      // If no browser face detection, estimate face region from upper central likely-skin components.
+      for(const s of sorted.slice(0,2)){
+        const c=s.c;
+        const ratio=(c.maxx-c.minx+1)/Math.max(1,(c.maxy-c.miny+1));
+        const areaFrac=c.area/(w*h);
+        if(c.cy < h*0.53 && c.cx>w*.12 && c.cx<w*.88 && ratio>.48 && ratio<1.95 && areaFrac>.001 && areaFrac<.17 && !c.touchesEdge){
+          const est = boxEllipseMask(w,h,{
+            x:c.minx, y:c.miny,
+            width: Math.max(24, c.maxx-c.minx+1),
+            height: Math.max(28, c.maxy-c.miny+1)
+          }, Math.round(+$('expand').value*.45));
+          for(let i=0;i<est.length;i++) if(est[i]) faceMask[i]=255;
+          addEyeBand(faceMask,w,h,{
+            x:c.minx,y:c.miny,width:Math.max(24,c.maxx-c.minx+1),height:Math.max(28,c.maxy-c.miny+1)
+          });
+        }
+      }
+    }
+
+    // Expand warm mask a little and remove face from body mask.
+    const body = dilate(kept,w,h,expand);
+    bodyMask = new Uint8Array(w*h);
+    for(let i=0;i<w*h;i++) if(body[i] && !faceMask[i]) bodyMask[i]=255;
+
+    // Expand face slightly more to reduce missed facial areas.
+    faceMask = dilate(faceMask,w,h,Math.round(+$('expand').value/8));
+
+    // Full-character mode estimates a single foreground region, including clothes.
+    fullMask = estimateFullCharacter(source,w,h);
+    // A fresh detection is a normal edit: save the PREVIOUS mask for Undo.
+    // No history reset here; Redo is cleared only when a new edit is made.
+    pushState();
+    composeMask();
+
+    const facePx=faceMask.reduce((a,v)=>a+(v?1:0),0);
+    const bodyPx=bodyMask.reduce((a,v)=>a+(v?1:0),0);
+    status(`Detection complete. Face: ${facePx.toLocaleString()} pixels · Body: ${bodyPx.toLocaleString()} pixels. ${faces.length?'Browser face detector helped identify the eyes.':'No browser face detector available; face/eye estimates may be unreliable.'} Review all covered areas before saving.`);
+  }catch(err){
+    status('Automatic detection failed: '+err.message);
+  }finally{
+    $('auto').disabled=false;
+  }
+}
+
+function originalCanvas(){
+  const cv=document.createElement('canvas'); cv.width=view.width;cv.height=view.height;
+  cv.getContext('2d').putImageData(source,0,0); return cv;
+}
+function render(){
+  if(!source) return;
+  ctx.putImageData(source,0,0);
+  if(showOriginal || !mask) return;
+
+  const w=view.width, h=view.height;
+  const fx=document.createElement('canvas'); fx.width=w; fx.height=h;
+  const fctx=fx.getContext('2d',{willReadFrequently:true});
+
+  // base source
+  fctx.putImageData(source,0,0);
+
+  if(effect==='mosaic'){
+    const blocks = Math.max(4, Math.round(4 + (+$('strength').value)*0.42));
+    const sw=Math.max(1, Math.ceil(w/blocks)), sh=Math.max(1, Math.ceil(h/blocks));
+    const tiny=document.createElement('canvas'); tiny.width=sw; tiny.height=sh;
+    const tctx=tiny.getContext('2d');
+    tctx.imageSmoothingEnabled=true;
+    tctx.drawImage(originalCanvas(),0,0,sw,sh);
+    fctx.clearRect(0,0,w,h);
+    fctx.imageSmoothingEnabled=false;
+    fctx.drawImage(tiny,0,0,w,h);
+  }else if(effect==='blur'){
+    fctx.filter = `blur(${Math.max(3, Math.round(+$('strength').value*0.34))}px)`;
+    fctx.drawImage(originalCanvas(),0,0);
+    fctx.filter = 'none';
+  }else if(effect==='corruption'){
+    // Deterministic pixel corruption: neon edge artifacts + void blacks.
+    // Sample the ORIGINAL image, never an already effected preview.
+    const pixels=source.data, altered=fctx.createImageData(w,h);
+    const amount=+$('strength').value/100;
+    const edgeOffset=Math.max(1,Math.floor(2+amount*7));
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+      const i=y*w+x,k=i*4;
+      const r=pixels[k],g=pixels[k+1],b=pixels[k+2];
+      const light=.299*r+.587*g+.114*b;
+      const j=(y*w+Math.min(w-1,x+edgeOffset))*4;
+      const r2=pixels[j],g2=pixels[j+1],b2=pixels[j+2];
+      const shifted=.299*r2+.587*g2+.114*b2;
+      const edge=Math.abs(light-shifted);
+      const noise=((x*73856093 ^ y*19349663 ^ 2654435761)>>>0)%101;
+      let R,G,B;
+      if(light<56+amount*40){R=0;G=0;B=0;}
+      else if(light>196-amount*18){R=252;G=252;B=250;}
+      else if(edge>18+amount*8){R=0;G=255;B=255;}
+      else if(noise<amount*17){R=255;G=15;B=110;}
+      else if(noise<amount*28){R=255;G=20;B=15;}
+      else if(noise<amount*38){R=0;G=245;B=255;}
+      else if(light<122){R=0;G=0;B=0;}
+      else {R=255;G=255;B=255;}
+      altered.data[k]=R;altered.data[k+1]=G;altered.data[k+2]=B;altered.data[k+3]=255;
+    }
+    fctx.putImageData(altered,0,0);
+  }else{
+    const noise=fctx.createImageData(w,h);
+    for(let i=0;i<w*h;i++){
+      // Stable noise, so undo/redraw doesn't reshuffle randomly.
+      const x=i%w,y=(i/w)|0;
+      const v=((x*374761393 ^ y*668265263 ^ 918221)>>>0)%256;
+      noise.data[i*4]=v; noise.data[i*4+1]=v; noise.data[i*4+2]=v; noise.data[i*4+3]=255;
+    }
+    fctx.putImageData(noise,0,0);
+  }
+
+  const base=ctx.getImageData(0,0,w,h), effected=fctx.getImageData(0,0,w,h);
+  const opacity=featherAlpha(mask,w,h,+$('feather').value);
+  for(let i=0;i<mask.length;i++){
+    const k=i*4, a=opacity[i];
+    if(a>0){
+      base.data[k]=Math.round(base.data[k]*(1-a)+effected.data[k]*a);
+      base.data[k+1]=Math.round(base.data[k+1]*(1-a)+effected.data[k+1]*a);
+      base.data[k+2]=Math.round(base.data[k+2]*(1-a)+effected.data[k+2]*a);
+    }
+    if(showMask && mask[i]){
+      base.data[k]=Math.round(base.data[k]*0.45 + 120);
+      base.data[k+1]=Math.round(base.data[k+1]*0.45);
+      base.data[k+2]=Math.round(base.data[k+2]*0.45);
+    }
+  }
+  ctx.putImageData(base,0,0);
+  if($('haunt').checked){
+    const stamps=['PATHETIC','WORTHLESS','REJECTED','TOTAL FAILURE','LOSER','WHAT A JOKE','TRASH'];
+    const fontSize=Math.max(13,Math.round(w*.027));
+    ctx.save();ctx.font=`bold ${fontSize}px monospace`;
+    ctx.fillStyle='rgba(255,35,67,0.88)';
+    ctx.strokeStyle='rgba(0,0,0,0.86)';ctx.lineWidth=Math.max(2,fontSize*.18);
+    ctx.translate(Math.round(w*.07),Math.round(h*.14));
+    ctx.rotate(-.095);
+    const lines=[stamps[overlayIndex%stamps.length]];
+    lines.forEach((line,i)=>{ctx.strokeText(line,0,i*(fontSize*1.35));ctx.fillText(line,0,i*(fontSize*1.35));});
+    ctx.restore();
+  }
+}
+
+function applyDot(p,mode){
+  if(!mask) return;
+  const rad=+$('brush').value, w=view.width, h=view.height, r2=rad*rad;
+  for(let y=Math.max(0,p.y-rad); y<=Math.min(h-1,p.y+rad); y++){
+    for(let x=Math.max(0,p.x-rad); x<=Math.min(w-1,p.x+rad); x++){
+      if((x-p.x)*(x-p.x)+(y-p.y)*(y-p.y) <= r2){
+        mask[y*w+x] = mode==='add' ? 255 : 0;
+      }
+    }
+  }
+}
+
+function stroke(a,b,mode){
+  const steps=Math.max(1, Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/3));
+  for(let i=0;i<=steps;i++){
+    applyDot({
+      x: Math.round(a.x + (b.x-a.x)*i/steps),
+      y: Math.round(a.y + (b.y-a.y)*i/steps)
+    }, mode);
+  }
+  render();
+}
+
+$('file').addEventListener('change', async e=>{
+  const file=e.target.files && e.target.files[0];
+  if(!file) return;
+  try{
+    const bmp=await createImageBitmap(file);
+    const scale=Math.min(1, 1280/Math.max(bmp.width,bmp.height));
+    const w=Math.max(1, Math.round(bmp.width*scale));
+    const h=Math.max(1, Math.round(bmp.height*scale));
+    view.width=w; view.height=h;
+    ctx.clearRect(0,0,w,h);
+    ctx.drawImage(bmp,0,0,w,h);
+    source=ctx.getImageData(0,0,w,h);
+    mask=new Uint8Array(w*h);
+    history=[]; future=[]; buttons();
+    $('editor').style.display='block';
+    status('Image loaded. Tap “Detect and censor automatically.”');
+    autoDetect();
+  }catch(err){
+    status('Could not load image: '+err.message);
+  }
+});
+
+$('auto').onclick=autoDetect;
+$('face').onchange=()=>{ if(source && (faceMask||bodyMask)){pushState();composeMask();} };
+$('skin').onchange=()=>{ if(source && (faceMask||bodyMask)){pushState();composeMask();} };
+for(const id of ['modeFull','modeSkin'])$(id).onchange=()=>{if(source){pushState();composeMask();}};
+$('art').onchange=()=>{};
+$('expand').oninput=()=>{ $('expandv').textContent=$('expand').value; };
+$('aggr').oninput=()=>{ $('aggrv').textContent=$('aggr').value; };
+
+$('tools').onclick=e=>{
+  const b=e.target.closest('button[data-tool]');
+  if(!b) return;
+  tool=b.dataset.tool;
+  for(const x of $('tools').querySelectorAll('button')) x.classList.toggle('active', x===b);
+};
+$('brush').oninput=()=>{ $('brushv').textContent=$('brush').value; };
+
+$('effects').onclick=e=>{
+  const b=e.target.closest('button[data-effect]');
+  if(!b) return;
+  effect=b.dataset.effect;
+  for(const x of $('effects').querySelectorAll('button')) x.classList.toggle('active', x===b);
+  render();
+};
+$('strength').oninput=()=>{ $('strengthv').textContent=$('strength').value; render(); };
+$('feather').oninput=()=>{ $('featherv').textContent=$('feather').value; render(); };
+$('haunt').onchange=()=>{overlayIndex++;render();};
+
+
+$('original').onclick=()=>{
+  showOriginal=!showOriginal;
+  $('original').textContent = showOriginal ? 'Show censored' : 'Show original';
+  render();
+};
+$('maskbtn').onclick=()=>{
+  showMask=!showMask;
+  $('maskbtn').textContent='Show mask: '+(showMask?'On':'Off');
+  render();
+};
+$('undo').onclick=()=>{
+  if(!history.length || !mask) return;
+  future.push(cloneMask(mask));
+  setMask(history.pop());
+};
+$('redo').onclick=()=>{
+  if(!future.length || !mask) return;
+  history.push(cloneMask(mask));
+  setMask(future.pop());
+};
+$('clear').onclick=()=>{
+  if(!source) return;
+  if(!confirm('Are you sure you want to clear this image? All edits and settings for this image will be lost.')) return;
+  resetEditor();
+};
+$('save').onclick=()=>{
+  if(!source) return;
+  const wasOriginal=showOriginal, wasMask=showMask;
+  showOriginal=false; showMask=false;
+  render();
+  view.toBlob(blob=>{
+    if(!blob) return;
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='skinmask-v11.png';
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1200);
+  }, 'image/png');
+  showOriginal=wasOriginal; showMask=wasMask;
+  setTimeout(render, 80);
+};
+
+view.onpointerdown=e=>{
+  if(!source || tool==='none') return;
+  e.preventDefault();
+  drawing=true;
+  pushState();
+  lastPoint=pointFromEvent(e);
+  stroke(lastPoint,lastPoint,tool);
+  view.setPointerCapture?.(e.pointerId);
+};
+view.onpointermove=e=>{
+  if(!drawing || tool==='none') return;
+  const p=pointFromEvent(e);
+  stroke(lastPoint,p,tool);
+  lastPoint=p;
+};
+view.onpointerup=view.onpointercancel=()=>{
+  drawing=false; lastPoint=null;
+};
+
+
+const noticeTextShort=["LOSER.", "PATHETIC.", "REJECTED.", "MORON.", "DUMBASS.", "EMBARRASSING.", "YOU'RE SO EASY.", "YOU'RE WEAK.", "YOU'RE A JOKE.", "YOU'RE A LOSER.", "YOU'RE PATHETIC.", "FUCK OFF.", "GET FUCKED.", "FUCKING LOSER.", "LOOK AT YOU.", "YOU'RE THE PUNCHLINE.", "YOU'RE STILL TRYING?", "NICE TRY, LOSER.", "WHAT A CLOWN.", "FUCKING EMBARRASSING.", "ABSOLUTE JOKE.", "WEAK AS FUCK.", "SO FUCKING LAME."];
+const noticeTextLong=["YOU REALLY OPENED THIS APP AGAIN?", "THAT'S WHAT YOU'RE HERE FOR?", "YOU ACTUALLY ENJOY THIS SHIT?", "STILL CENSORING EVERYTHING?", "LOOK WHO CAME BACK.", "OH, YOU AGAIN.", "GO AHEAD. CENSOR IT.", "YOU CALL THAT AN EDIT?", "WHAT A FUCKING JOKE.", "BACK FOR MORE, HUH?", "YOU'RE REALLY COMMITTED TO THIS.", "BACK FOR MORE SHIT?", "CAN'T GET ENOUGH MOSAIC?", "LOOK WHO'S BACK.", "STILL FUCKING EDITING?", "YOU LOVE THAT BLUR BUTTON, HUH?", "HIDING THE WHOLE DAMN THING?", "OH, ANOTHER ONE?", "HOW MANY PICTURES IS THAT NOW?", "YOU REALLY NEED MORE STATIC?", "YOU REALLY SPEND TIME DOING THIS?", "NOT SO FAST, LOSER.", "OH, YOU WANTED TO EDIT?", "YOU'RE NOT DONE YET.", "YOU MISSED AGAIN.", "ENJOY THE INTERRUPTION.", "LOOKS LIKE YOU'RE WAITING AGAIN.", "YOU WANTED YOUR SCREEN BACK?", "BACK TO FIVE.", "FUCK YOUR COUNTDOWN.", "NOT FINISHED.", "OH, FUCKING PLEASE.", "WHAT THE HELL ARE YOU DOING?", "OH, THIS IS PRICELESS.", "YOU FELL FOR THAT SHIT?", "YOU'RE SO EASY TO MESS WITH.", "YOU KEEP COMING BACK."];
+const MSG_KEY='skinmask_v101_custom_messages';
+const MSG_BUILTIN_KEY='skinmask_v101_include_builtin';
+let customMessages=[];
+function loadCustomMessages(){
+  try{const stored=JSON.parse(localStorage.getItem(MSG_KEY)||'[]');customMessages=Array.isArray(stored)?stored.filter(x=>typeof x==='string').slice(0,150):[];}catch(_){customMessages=[];}
+  $('customMessages').value=customMessages.join('\n');
+  try{$('includeBuiltins').checked=localStorage.getItem(MSG_BUILTIN_KEY)!=='false';}catch(_){}
+  updateMessageCount();
+}
+function updateMessageCount(){
+  $('customMessageCount').textContent=`${customMessages.length} custom message${customMessages.length===1?'':'s'} saved`;
+}
+function saveCustomMessages(){
+  const lines=$('customMessages').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const unique=[...new Set(lines)].slice(0,150).map(s=>s.slice(0,160));
+  customMessages=unique;
+  $('customMessages').value=unique.join('\n');
+  try{localStorage.setItem(MSG_KEY,JSON.stringify(unique));}catch(e){$('messageSaveStatus').textContent='Browser storage is unavailable. Messages will work until you close the page.';updateMessageCount();return;}
+  updateMessageCount();$('messageSaveStatus').textContent='Saved on this device.';
+}
+
+let horrorTick=null, takeoverTick=null, takeoverActive=false, horrorWasEnabled=false;
+let activeEvent=null, eventTimeouts=[], recentEvents=[], eventLock=false;
+const rand=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
+const pick=a=>a[rand(0,a.length-1)];
+const shortPool=()=>[...($('includeBuiltins').checked?noticeTextShort:[]),...customMessages.filter(t=>t.length<35)];
+function messagePool(){return [...($('includeBuiltins').checked?[...noticeTextShort,...noticeTextLong]:[]),...customMessages]}
+function randomMessage(shortPreferred=true){
+  const pool=(shortPreferred||Math.random()<.83)?shortPool():messagePool();
+  const fallback=messagePool();return pick(pool.length?pool:(fallback.length?fallback:['REJECTED.']));
+}
+function after(fn,ms){const t=setTimeout(fn,ms);eventTimeouts.push(t);return t}
+function resetEventTimers(){eventTimeouts.forEach(clearTimeout);eventTimeouts=[]}
+function clearFloaters(){$('horrorLayer').replaceChildren()}
+function closeHorrorDialog(){$('horrorShade').hidden=true}
+function finishTakeover(){clearTimeout(takeoverTick);takeoverTick=null;takeoverActive=false;$('takeover').hidden=true}
+function restoreVisual(){
+  document.querySelector('main')?.classList.remove('hvr-upside','hvr-melt','hvr-zoom');
+  $('horrorEffects').replaceChildren();$('horrorEffects').hidden=true;
+  closeHorrorDialog();clearFloaters();finishTakeover();
+  resetEventTimers();activeEvent=null;eventLock=false;cancelSpeech();
+  $('horrorPanic').hidden=!$('notices').checked;
+}
+function stopNotices(){clearTimeout(horrorTick);horrorTick=null;clearTimeout(noticeTimer);noticeTimer=null;restoreVisual();noticeCount=0}
+function teardownEvent(){restoreVisual();if($('notices').checked)scheduleNotice()}
+function rememberEvent(name){recentEvents.push(name);if(recentEvents.length>5)recentEvents.shift()}
+function popupStyle(){return pick(['danger','terminal','paper','yellow','violet','outline'])}
+function speak(text){
+  if(!$('voiceEnabled').checked||!('speechSynthesis' in window))return;
+  try{const u=new SpeechSynthesisUtterance(text);const voices=speechSynthesis.getVoices();const chosen=voices.find(v=>v.voiceURI===$('voiceSelect').value)||voices.find(v=>/female|woman|samantha|zira|victoria|susan|aria|jenny|google us english/i.test(v.name))||null;
+    if(chosen)u.voice=chosen;u.pitch=+$('voicePitch').value;u.rate=+$('voiceRate').value;u.volume=+$('voiceVol').value/100;
+    speechSynthesis.cancel();speechSynthesis.speak(u)
+  }catch(_){ }
+}
+function cancelSpeech(){try{speechSynthesis.cancel()}catch(_){}}
+function makePopup(message,variant=null){
+  const p=document.createElement('div');p.className='v11-pop v11-'+(variant||popupStyle());
+  const words=document.createElement('div');words.className='v11-words';words.textContent=message;p.appendChild(words);
+  const close=document.createElement('button');close.className='v11-x';close.textContent='×';close.setAttribute('aria-label','Close notification');
+  close.onclick=()=>{p.remove();if(!$('horrorLayer').children.length&&!eventLock)teardownEvent()};p.appendChild(close);
+  $('horrorLayer').appendChild(p);p.style.top=rand(5,Math.max(5,innerHeight-180))+'px';p.style.left=rand(5,Math.max(5,innerWidth-240))+'px';
+  return p;
+}
+function positionPop(p){if(!p.isConnected)return;p.style.left=rand(2,Math.max(3,innerWidth-p.offsetWidth-8))+'px';p.style.top=rand(2,Math.max(3,innerHeight-p.offsetHeight-8))+'px'}
+function doFloat(){const p=makePopup(randomMessage());speak(p.querySelector('.v11-words').textContent);const loops=rand(2,4);for(let i=1;i<=loops;i++)after(()=>positionPop(p),i*rand(600,1150));after(teardownEvent,Math.min(11000,loops*1100+2000))}
+function doMultiX(){
+ const p=makePopup(randomMessage(),'yellow');p.querySelector('.v11-x').remove();p.classList.add('v11-multix');
+ const n=rand(3,7), winner=rand(0,n-1),bar=document.createElement('div');bar.className='v11-xbar';
+ for(let i=0;i<n;i++){const b=document.createElement('button');b.textContent='×';b.setAttribute('aria-label','Close option '+(i+1));b.onclick=()=>{if(i===winner)teardownEvent();else{p.classList.toggle('v11-shake');positionPop(p);after(()=>p.classList.remove('v11-shake'),280)}};bar.appendChild(b)}p.appendChild(bar);speak(p.querySelector('.v11-words').textContent);after(teardownEvent,12500)
+}
+function doTyping(){const word=randomMessage(),p=makePopup('','terminal');p.classList.add('v11-type');speak(word);const t=p.querySelector('.v11-words');let i=0;function tick(){if(!p.isConnected)return;t.textContent=word.slice(0,++i)+(i<word.length?'▌':'');if(i<word.length)after(tick,rand(35,130));else after(teardownEvent,2400)}tick();after(teardownEvent,12000)}
+function doTap(){const count=rand(5,13),p=makePopup(randomMessage(),'danger');p.querySelector('.v11-x').remove();let n=count;
+const b=document.createElement('button');b.className='v11-tap';b.textContent='× '+n;b.onclick=()=>{n--;b.textContent='× '+n;p.classList.toggle('v11-shake');if(n<=0)teardownEvent();else if(n%3===0)positionPop(p)};p.appendChild(b);speak(p.querySelector('.v11-words').textContent);after(teardownEvent,13000)}
+function doSwipe(){const layer=$('horrorLayer');let alive=rand(3,6);speak(randomMessage());for(let i=0;i<alive;i++){
+ const p=makePopup(randomMessage(),'paper');p.classList.add('v11-swipe');p.querySelector('.v11-x').remove();let x=0,y=0,start=null;
+ p.onpointerdown=e=>{start={x:e.clientX,y:e.clientY};p.setPointerCapture(e.pointerId)};
+ p.onpointermove=e=>{if(!start)return;x=e.clientX-start.x;y=e.clientY-start.y;p.style.transform=`translate(${x}px,${y}px) rotate(${x/9}deg)`};
+ p.onpointerup=()=>{if(!start)return;if(Math.abs(x)>65||Math.abs(y)>65){p.remove();if(--alive<=0)teardownEvent()}else{p.style.transform='';}start=null};
+ }after(teardownEvent,13000)}
+function doInfection(){eventLock=true;const p=makePopup(randomMessage(),'violet');let count=1;
+function split(){if(count>=rand(4,7))return;makePopup(randomMessage());count++;after(split,rand(420,1150))}
+speak(p.querySelector('.v11-words').textContent);after(split,650);after(()=>{eventLock=false;teardownEvent()},rand(4500,9500))}
+function doSpin(){const p=makePopup(randomMessage(),'yellow');p.classList.add('v11-spin');speak(p.querySelector('.v11-words').textContent);after(teardownEvent,rand(3500,7000))}
+function doGrow(){const p=makePopup(randomMessage(),'outline');p.classList.add('v11-grow');speak(p.querySelector('.v11-words').textContent);after(()=>{p.remove();for(let i=0;i<rand(3,5);i++)makePopup(randomMessage())},1600);after(teardownEvent,6500)}
+function doFalsePreview(){const layer=$('horrorEffects');layer.hidden=false;layer.className='v11-false';const stamp=document.createElement('div');stamp.className='v11-false-stamp';stamp.textContent=randomMessage();layer.append(stamp);speak(stamp.textContent);after(teardownEvent,rand(2000,5200))}
+function doContamination(){const layer=$('horrorEffects');layer.hidden=false;layer.className='v11-contamination';const w=document.createElement('div');w.className='v11-contamination-word';w.textContent=randomMessage();layer.appendChild(w);speak(w.textContent);after(teardownEvent,rand(3500,7000))}
+function doTransform(name){const main=document.querySelector('main');main.classList.add('hvr-'+name);speak(randomMessage());after(teardownEvent,rand(3500,7000))}
+function doJigsaw(){const layer=$('horrorEffects');layer.hidden=false;layer.className='v11-jigsaw';for(let i=0;i<12;i++){const piece=document.createElement('div');piece.className='v11-piece';piece.textContent=i%3===0?randomMessage():'';piece.style.setProperty('--dx',rand(-30,30)+'px');piece.style.setProperty('--dy',rand(-30,30)+'px');layer.appendChild(piece)}speak(randomMessage());after(teardownEvent,rand(3600,6900))}
+function doTiles(){const layer=$('horrorEffects');layer.hidden=false;layer.className='v11-tiles';const n=Math.random()<.5?2:3;layer.style.setProperty('--cols',String(n));
+// Each tile is a lightweight visual mirror of the live editor, not a separate editor with conflicting controls.
+for(let i=0;i<n*n;i++){const tile=document.createElement('div');tile.className='v11-tile';const mini=document.createElement('div');mini.className='v11-mini';
+ const head=document.createElement('div');head.textContent='SKIN MASK / V11';mini.appendChild(head);
+ const controls=document.createElement('div');controls.className='v11-mini-controls';controls.textContent='AUTO DETECTION    MOSAIC   BLUR   STATIC';mini.appendChild(controls);
+ const photo=document.createElement('img');photo.alt='Censored preview copy';try{photo.src=view.toDataURL('image/jpeg',0.52)}catch(_){}mini.appendChild(photo);
+ const foot=document.createElement('div');foot.textContent='STRENGTH  ▰▰▰▰▰  FEATHER   ▰▰';mini.appendChild(foot);
+ tile.appendChild(mini);layer.appendChild(tile)}speak(randomMessage());after(teardownEvent,rand(5500,9800))}
+function doCountdown(){
+ takeoverActive=true;$('takeover').hidden=false;$('takeoverWord').textContent=randomMessage();speak($('takeoverWord').textContent);$('takeoverSub').textContent='';
+ let sec=5,resets=0,limit=rand(0,2);$('takeoverClock').textContent=String(sec);
+ function step(){if(!takeoverActive)return;sec--;if(sec<=0){if(resets++<limit){sec=5;$('takeoverWord').textContent=randomMessage();speak($('takeoverWord').textContent)}else{return teardownEvent()}}
+ $('takeoverClock').textContent=String(sec);takeoverTick=setTimeout(step,1000)}takeoverTick=setTimeout(step,1000);
+}
+function doCombo(){eventLock=true;const first=makePopup(randomMessage(),'terminal');speak(first.querySelector('.v11-words').textContent);after(()=>{
+ clearFloaters();const layer=$('horrorEffects');layer.hidden=false;layer.className='v11-contamination';
+ const words=document.createElement('div');words.className='v11-contamination-word';words.textContent=randomMessage();layer.append(words);
+ for(let i=0;i<3;i++)makePopup(randomMessage());speak(words.textContent)
+ },1700);after(()=>{eventLock=false;teardownEvent()},6200)}
+const events={
+ 'Moving popup':doFloat,'Multiple random X buttons':doMultiX,'Typewriter':doTyping,'Rapid tap':doTap,'Swipe cards':doSwipe,'Popup infection':doInfection,'Spinning warning':doSpin,'Growing window':doGrow,'False preview':doFalsePreview,'Screen contamination':doContamination,'Upside-down editor':()=>doTransform('upside'),'Screen meltdown':()=>doTransform('melt'),'Magnification':()=>doTransform('zoom'),'Jigsaw interface':doJigsaw,'2×2 or 3×3 editor mirrors':doTiles,'Random countdown':doCountdown,'Combination attack':doCombo
+};
+function runEvent(name,force=false){if(!$('notices').checked&&!force)return;restoreVisual();activeEvent=name;rememberEvent(name);try{events[name]()}catch(e){console.error(e);teardownEvent()}}
+function chooseEvent(){
+ const intensity=+$('harsh').value;
+ // Lower settings favor short, low-obstruction windows; maximal settings
+ // unlock the most disruptive combinations and screen transformations.
+ const simple=['Moving popup','Typewriter','Spinning warning','False preview'];
+ const mid=['Multiple random X buttons','Rapid tap','Swipe cards','Popup infection','Growing window','Screen contamination','Jigsaw interface'];
+ const severe=['Upside-down editor','Screen meltdown','Magnification','2×2 or 3×3 editor mirrors','Random countdown','Combination attack'];
+ const keys=intensity<25?simple:intensity<55?[...simple,...mid]:intensity<85?[...simple,...mid,...severe]:[...mid,...severe,...severe,'Combination attack'];
+ const candidates=keys.filter(k=>!recentEvents.slice(-3).includes(k));return pick(candidates.length?candidates:keys)
+}
+function showNotice(force=false){if(!$('notices').checked&&!force)return;runEvent(chooseEvent(),force)}
+function scheduleNotice(){clearTimeout(horrorTick);horrorTick=null;if(!$('notices').checked)return;
+ const f=+$('freq').value/100;
+ // About 75s between events at 1%, falling to ~2-4 seconds at 100%.
+ const base=76000*Math.pow(0.035,f);const jitter=rand(75,140)/100;
+ horrorTick=setTimeout(()=>{if(!$('notices').checked)return;if(!activeEvent)showNotice();scheduleNotice()},Math.round(base*jitter))
+}
+$('notices').onchange=()=>{if($('notices').checked){if(!horrorWasEnabled){
+ if(!confirm('Enable optional Horror Mode? It includes profanity, direct theatrical taunts, simulated screen transformations, moving popups, and countdowns. You can disable it from the editor settings or leave the browser at any time. No sexual content.')){$('notices').checked=false;return}horrorWasEnabled=true
+ }$('horrorPanic').hidden=false;scheduleNotice()}else stopNotices()};
+$('harsh').oninput=()=>{$('harshv').textContent=$('harsh').value+'%'};
+$('freq').oninput=()=>{$('freqv').textContent=$('freq').value+'%';scheduleNotice()};
+$('testNotice').onclick=()=>showNotice(true);
+$('disableHorror').onclick=()=>{$('notices').checked=false;stopNotices()};
+$('horrorPanic').onclick=()=>{$('notices').checked=false;stopNotices()};
+$('runTest').onclick=()=>runEvent($('testEffect').value,true);
+$('stopTest').onclick=restoreVisual;
+for(const key of Object.keys(events)){const opt=document.createElement('option');opt.value=key;opt.textContent=key;$('testEffect').appendChild(opt)}
+$('saveMessages').onclick=saveCustomMessages;
+$('clearMessages').onclick=()=>{if(!confirm('Delete all saved custom popup messages?'))return;
+ $('customMessages').value='';customMessages=[];try{localStorage.removeItem(MSG_KEY)}catch(_){ }updateMessageCount();$('messageSaveStatus').textContent='Custom messages cleared.'};
+$('includeBuiltins').onchange=()=>{try{localStorage.setItem(MSG_BUILTIN_KEY,String($('includeBuiltins').checked))}catch(_){};
+ $('messageSaveStatus').textContent=$('includeBuiltins').checked?'Built-in messages included.':'Using custom messages only.'};
+loadCustomMessages();
+$('horrorClose').onclick=teardownEvent;
+function voiceList(){if(!('speechSynthesis' in window))return;const list=speechSynthesis.getVoices(),sel=$('voiceSelect'),prev=sel.value;
+sel.replaceChildren(new Option('Device default',''));for(const v of list){sel.add(new Option(v.name+' ('+v.lang+')',v.voiceURI))}
+if(list.some(v=>v.voiceURI===prev))sel.value=prev;else {const best=list.find(v=>/female|samantha|zira|victoria|susan|aria|jenny|google us english/i.test(v.name));if(best)sel.value=best.voiceURI}}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=voiceList;voiceList()}
+$('voicePitch').oninput=()=>{$('pitchValue').textContent=$('voicePitch').value};
+$('voiceRate').oninput=()=>{$('rateValue').textContent=$('voiceRate').value};
+$('voiceVol').oninput=()=>{$('volValue').textContent=$('voiceVol').value+'%'};
+$('speakTest').onclick=()=>{if(!('speechSynthesis' in window))return alert('Voice synthesis is unavailable on this browser');$('voiceEnabled').checked=true;speak($('voiceTry').value.slice(0,160))};
+
+resetEditor();
+</script>
+</body>
+</html>
